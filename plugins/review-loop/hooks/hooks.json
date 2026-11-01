@@ -1,0 +1,16 @@
+{
+  "description": "Independent bug and security review in a separate claude -p session before Claude stops",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop.sh\"",
+            "timeout": 900
+          }
+        ]
+      }
+    ]
+  }
+}
