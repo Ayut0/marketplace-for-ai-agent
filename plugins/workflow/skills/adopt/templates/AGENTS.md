@@ -4,7 +4,7 @@
 
 This file is the working agreement for any agent or contributor. It is
 intentionally thin: the shared cycle and review method live in the
-[`workflow` plugin](https://github.com/Ayut0/maeketplace-for-ai-agent) (auto-enabled by
+[`workflow` plugin](https://github.com/Ayut0/marketplace-for-ai-agent) (auto-enabled by
 `.claude/settings.json`) and the
 [matt-pocock skill suite](https://github.com/mattpocock/skills); this file only
 spells out the facts specific to this repo.
@@ -65,7 +65,7 @@ CI reviewer (`@claude review`) before the work is reported done.
 | Self-reviewing, or reviewing a PR | `workflow:code-review-guideline` |
 
 Routing changes that apply to every repo belong upstream in
-`Ayut0/maeketplace-for-ai-agent`, not here. Propose a repo-local change only for a
+`Ayut0/marketplace-for-ai-agent`, not here. Propose a repo-local change only for a
 convention specific to this repo.
 
 ## Agent skills

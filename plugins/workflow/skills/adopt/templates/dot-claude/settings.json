@@ -1,7 +1,7 @@
 {
   "extraKnownMarketplaces": {
     "ayut0-agent-workflow": {
-      "source": { "source": "github", "repo": "Ayut0/maeketplace-for-ai-agent" }
+      "source": { "source": "github", "repo": "Ayut0/marketplace-for-ai-agent" }
     }
   },
   "enabledPlugins": {

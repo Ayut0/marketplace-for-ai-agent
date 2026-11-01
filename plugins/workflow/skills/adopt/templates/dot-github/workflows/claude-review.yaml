@@ -1,7 +1,7 @@
 name: Claude Code Review
 
 # Advisory PR review on `@claude review`. The logic lives in
-# Ayut0/maeketplace-for-ai-agent's reusable workflow; this caller only gates who can
+# Ayut0/marketplace-for-ai-agent's reusable workflow; this caller only gates who can
 # trigger it. One-time setup: install https://github.com/apps/claude and add the
 # CLAUDE_CODE_OAUTH_TOKEN repo secret (`claude setup-token`).
 # issue_comment workflows run from the default branch only.
@@ -27,6 +27,6 @@ jobs:
       issues: write
       checks: write
       id-token: write
-    uses: Ayut0/maeketplace-for-ai-agent/.github/workflows/claude-review.yml@main
+    uses: Ayut0/marketplace-for-ai-agent/.github/workflows/claude-review.yml@main
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}

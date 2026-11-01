@@ -1,4 +1,4 @@
-# maeketplace-for-ai-agent
+# marketplace-for-ai-agent
 
 One home for the agent working agreement extracted from
 [tally-up](https://github.com/Ayut0/tally-up): the
@@ -23,7 +23,7 @@ command, a directory, or a domain concept of one repo, it lives in that repo.
 1. Open Claude Code in the target repo and install once (local machine):
 
    ```
-   /plugin marketplace add Ayut0/maeketplace-for-ai-agent
+   /plugin marketplace add Ayut0/marketplace-for-ai-agent
    /plugin install workflow@ayut0-agent-workflow
    ```
 

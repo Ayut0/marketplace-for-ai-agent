@@ -20,7 +20,7 @@ on:
   workflow_call:
     inputs:
       workflow-ref:
-        description: Ref of Ayut0/maeketplace-for-ai-agent to read the review skill from. Match the ref in the caller's `uses:` line.
+        description: Ref of Ayut0/marketplace-for-ai-agent to read the review skill from. Match the ref in the caller's `uses:` line.
         type: string
         default: main
     secrets:
@@ -55,7 +55,7 @@ jobs:
       - name: Checkout shared workflow
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: Ayut0/maeketplace-for-ai-agent
+          repository: Ayut0/marketplace-for-ai-agent
           ref: ${{ inputs.workflow-ref }}
           path: .agent-workflow
 
