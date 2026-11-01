@@ -46,9 +46,14 @@ Propose a concrete default for each so the human can just confirm.
 ## 3. Write
 
 Copy each template to its target path and replace every `{{PLACEHOLDER}}`.
+Before writing a verify command into `AGENTS.md`, run it once: a command that
+fails for a reason that predates the adoption (a stale lockfile version, a
+broken linter config) goes in a "known gaps" note, not in the verify list.
 A lens with nothing to say becomes a single line ("None yet — add as review
-findings recur."), not an invented rule. No `{{` may remain:
-`grep -rn '{{' AGENTS.md CLAUDE.md REVIEW.md docs/agents .claude .github`.
+findings recur."), not an invented rule. No placeholder may remain — match the
+`{{UPPER_CASE}}` form only, because the workflow file legitimately contains
+GitHub Actions `${{ ... }}` expressions:
+`grep -rnE '\{\{[A-Z_]+\}\}' AGENTS.md CLAUDE.md REVIEW.md docs/agents .claude .github`.
 
 Keep the repo files thin: nothing that is already in this plugin's shared
 skills gets copied in.
