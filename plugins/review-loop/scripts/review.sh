@@ -67,9 +67,18 @@ $(cat "$(review_rules_path)")
 ${PREV}"
 
 # CLAUDE_REVIEW_RUNNING: marker so this claude -p session's own Stop hook does not start another review
-CLAUDE_REVIEW_RUNNING=1 claude -p "$PROMPT" \
+# Write to a temp file first: if claude itself fails (not signed in, rate limit, network) no round file is left
+# behind (it would count toward the round limit) and we exit 5 ("cannot run"), which the Stop hook does not block on.
+# stdin is closed so claude -p does not wait for piped input.
+TMP_OUT="$(mktemp)"
+trap 'rm -f "$TMP_OUT"' EXIT
+if ! CLAUDE_REVIEW_RUNNING=1 claude -p "$PROMPT" \
   --allowedTools "Read,Grep,Glob,Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git blame:*),Bash(git status:*)" \
-  > "$OUT"
+  < /dev/null > "$TMP_OUT"; then
+  echo "The reviewer (claude -p) failed to run; skipping this review" >&2
+  exit 5
+fi
+mv "$TMP_OUT" "$OUT"
 
 echo "$HASH" > "$DIR/last-hash"
 git rev-parse HEAD > "$DIR/last-commit" 2>/dev/null || true

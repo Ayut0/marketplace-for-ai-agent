@@ -50,9 +50,16 @@ ${EXTRA}
 
 $(sed '/^<!--/,/^-->/d' "$PLUGIN_ROOT/prompts/security-review.md")"
 
-CLAUDE_REVIEW_RUNNING=1 claude -p "$PROMPT" \
+# Write to a temp file first so a failed claude run leaves no output file (see review.sh); exit 5 = cannot run
+TMP_OUT="$(mktemp)"
+trap 'rm -f "$TMP_OUT"' EXIT
+if ! CLAUDE_REVIEW_RUNNING=1 claude -p "$PROMPT" \
   --allowedTools "Read,Grep,Glob,LS,Task,Agent,Bash(git diff:*),Bash(git status:*),Bash(git log:*),Bash(git show:*)" \
-  > "$OUT"
+  < /dev/null > "$TMP_OUT"; then
+  echo "The reviewer (claude -p) failed to run; skipping the security review" >&2
+  exit 5
+fi
+mv "$TMP_OUT" "$OUT"
 
 echo "$HASH" > "$DIR/security-last-hash"
 echo "$OUT"
