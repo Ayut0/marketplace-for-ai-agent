@@ -1,0 +1,11 @@
+{
+  "name": "ayut0-agent-workflow",
+  "owner": { "name": "Ayut0" },
+  "plugins": [
+    {
+      "name": "workflow",
+      "source": "./plugins/workflow",
+      "description": "plan → implement → self-review → verify → report cycle: /workflow:address, /workflow:code-review-guideline, /workflow:adopt"
+    }
+  ]
+}

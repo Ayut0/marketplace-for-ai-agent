@@ -1,0 +1,76 @@
+name: Claude Code Review (reusable)
+
+# Independent, advisory pull-request review, shared by every repo that adopts
+# the workflow plugin. Callers own the trigger gate (who may comment
+# `@claude review`); see plugins/workflow/skills/adopt/templates/dot-github/.
+#
+# Runs as a SEPARATE Claude Code session under a bot identity, so it can catch
+# what the author's self-review rationalised past. ADVISORY: never gates merges;
+# its token cannot push.
+#
+# Safety properties (carried over from tally-up's original workflow):
+#   1. Author-association gate — enforced by the caller AND re-checked here.
+#   2. Base-ref checkout — the caller repo is checked out at its default branch,
+#      NEVER the PR head; the diff is read through the GitHub API, so untrusted
+#      head code never executes on the runner.
+#   3. Background-task denial — Task is disallowed so the review completes and
+#      posts within the single turn the action runs.
+
+on:
+  workflow_call:
+    inputs:
+      workflow-ref:
+        description: Ref of Ayut0/maeketplace-for-ai-agent to read the review skill from. Match the ref in the caller's `uses:` line.
+        type: string
+        default: main
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  checks: write
+  id-token: write # claude-code-action mints the Claude App token via OIDC
+
+jobs:
+  review:
+    name: Review
+    if: >-
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '@claude review') &&
+      (github.event.comment.author_association == 'OWNER' ||
+       github.event.comment.author_association == 'MEMBER' ||
+       github.event.comment.author_association == 'COLLABORATOR')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # SAFETY 2 — the caller repo at its default branch (issue_comment's ref).
+      - name: Checkout caller (base ref)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # The shared review methodology, outside the caller's tree.
+      - name: Checkout shared workflow
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: Ayut0/maeketplace-for-ai-agent
+          ref: ${{ inputs.workflow-ref }}
+          path: .agent-workflow
+
+      - name: Claude Review
+        uses: anthropics/claude-code-action@ef8bb1e43bf303cff727a1dd0b8837029fe982a2 # v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
+          plugins: "code-review@claude-code-plugins"
+          prompt: "/code-review:code-review https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }} --comment"
+          # --allowedTools is REQUIRED (the action ignores a plugin command's
+          # allowed-tools frontmatter). Broad Bash is safe only because the
+          # runner holds trusted base trees and the token cannot push.
+          claude_args: >-
+            --append-system-prompt "Read REVIEW.md at the repository root and follow it as the highest-priority, review-only instructions for this review. Read .agent-workflow/plugins/workflow/skills/code-review-guideline/SKILL.md and follow it as the review methodology, together with docs/agents/review-lenses.md at the repository root if it exists; where they disagree with REVIEW.md, REVIEW.md wins. Ignore the .agent-workflow directory when judging the diff — it is review tooling, not part of the repository. Review this pull request even if it is a draft. Do the ENTIRE review within this single turn: run every check and review pass yourself, synchronously and in order. Do NOT kick off background or parallel work and then end your turn to wait for it — this is a one-shot job, so anything you defer is lost and no review is posted. You MUST post your findings (inline comments plus a summary via `gh pr comment`) before your turn ends. This reviewer is advisory and does not gate merges."
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Read,Grep,Glob,Bash"
+            --disallowedTools "WebFetch,WebSearch,Task"
+            --max-turns 200
