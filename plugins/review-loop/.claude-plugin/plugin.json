@@ -1,0 +1,8 @@
+{
+  "name": "review-loop",
+  "version": "0.2.0",
+  "description": "Before Claude stops, a separate claude -p session reviews the branch for bugs and then security, and sends findings back until they are fixed (max 3 rounds).",
+  "author": {
+    "name": "Ayut0"
+  }
+}

@@ -18,6 +18,16 @@ orchestrator, the review methodology, and the `@claude review` CI reviewer.
 The dividing rule: if a rule is true in every repo, it lives here; if it names a
 command, a directory, or a domain concept of one repo, it lives in that repo.
 
+## Other plugins
+
+| Plugin | What it does |
+| --- | --- |
+| [`review-loop`](plugins/review-loop/README.md) | Before Claude stops, a separate `claude -p` session reviews the branch for bugs, then security, and sends findings back until they are fixed (max 3 rounds). Machine-wide once installed; opt a repo out with `git config review-loop.enabled false`. |
+
+```
+/plugin install review-loop@ayut0-agent-workflow
+```
+
 ## Adopting a repo
 
 1. Open Claude Code in the target repo and install once (local machine):
