@@ -15,6 +15,27 @@ Everything repo-specific (Verify commands, Escalation triggers, branch
 naming) comes from the repo's `AGENTS.md`. If the repo has no `AGENTS.md`,
 stop and suggest `/workflow:adopt`.
 
+## Gates: what runs on its own, what waits for the human
+
+The rule: work that can be undone and checked by a machine runs on its own;
+anything that can't be undone, leaves the repo, or needs a product judgement
+waits for the human. Human gates sit at the start and the end of a batch, so
+the sessions run without stopping in between.
+
+| Runs on its own | Waits for the human |
+| --- | --- |
+| Listing ready issues, writing briefs, creating branches and worktrees | **Starting a batch**: which issues run together (step 2) |
+| Implementing, tests, self-review, Verify | **Plan of an Escalation issue**: that session stops after its plan and waits for approval |
+| Pushing the feature branch, opening the PR, posting `@claude review` | A product, UX or scope question the issue leaves open |
+| Fixing CI-reviewer findings (up to the 5-round cap) | Rewriting pushed history (rebase, force push) |
+| The orchestrator's own review of each PR, sending fixes back to its session | **Merging**, always |
+| Writing follow-ups into the PR body and the report | Creating follow-up issues, or commenting on other issues |
+| | Checks a machine can't run (a real device, a lock-screen notification) |
+| | The next batch, and a review loop that hits its cap |
+
+A repo MAY tighten this in its `AGENTS.md` (more gates); it MUST NOT loosen
+the merge gate.
+
 ## 1. List what is ready
 
 Run `scripts/ready-issues.sh` (in this skill's directory) from the repo. It
@@ -47,17 +68,24 @@ before dispatching: an issue can be merged between listing and dispatch.
 - Prefer issues that unblock the most others (count how many `blocked`
   lines name them).
 
-Show the human the batch (issue, why it's ready, overlaps) before starting
-it. Their go-ahead on the batch stands in for each session's plan-approval
-gate in `/workflow:address`; a session MUST still stop and ask on a genuine
-product, UX or scope decision.
+Show the human the batch (issue, why it's ready, overlaps, which one is the
+Escalation issue) and wait for their go-ahead. That go-ahead approves the
+plans of every non-Escalation issue in the batch, so those sessions run
+`/workflow:address` in orchestrated mode and do not stop for plan approval.
+The Escalation issue's session still stops after its plan; tell the human
+which session is waiting.
 
 ## 3. Write one brief per issue
 
 A fresh session sees only its brief. Each brief MUST include:
 
-- **Task:** deliver `#<n>` with `/workflow:address <n>`, on a branch named per
-  `AGENTS.md` § Conventions, cut from the default branch.
+- **Setup, then task:** first create the branch named per `AGENTS.md`
+  § Conventions from the default branch (`address` does not create one);
+  then you MUST run `/workflow:address <n>` rather than following the cycle
+  from memory.
+- **Mode:** for a non-Escalation issue, the line "Orchestrated run: the plan
+  is pre-approved by the human's batch go-ahead." For the Escalation issue,
+  "Orchestrated run: stop after the plan and wait for the human's approval."
 - **Area:** the files/directories it should touch, and the ones other
   sessions in this batch own (stay out of them, or keep edits there minimal).
 - **Existing work:** any branch or earlier attempt found in step 1.
@@ -93,7 +121,8 @@ is done:
       offline path): verify it yourself, or tell the human exactly what is
       left and how to check it.
 - [ ] Notes for later issues in the epic (assumptions a dependent issue must
-      honour): put them in the report, or comment them on that issue.
+      honour) and follow-ups: put them in the report. Comment on another
+      issue or open a new one only when the human says so.
 
 Send fixes back to the session that wrote the PR (it has the context), not to
 a new one. MUST NOT merge; merging is the human's gate.
@@ -101,7 +130,7 @@ a new one. MUST NOT merge; merging is the human's gate.
 ## 6. Next batch
 
 After the human merges, run step 1 again: merged PRs turn their dependents
-`ready`. Report the new batch rather than starting it unasked.
+`ready`. Propose the new batch and wait; never start it unasked.
 
 ## Report
 

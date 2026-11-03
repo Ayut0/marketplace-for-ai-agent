@@ -31,13 +31,27 @@ target, per `AGENTS.md`'s Conventions — this skill MUST NOT create one.
 ## Plan
 
 Read the issue/PR (`gh issue view <n> --comments` / `gh pr view <n>`) and the
-docs `docs/agents/domain.md` says to read before exploring. If the spec leaves
-a genuine product/UX/scope decision unstated, you MUST ask the human before
-writing the plan — you MUST NOT guess.
+docs `docs/agents/domain.md` says to read before exploring. If the issue is
+already closed, or a merged PR already closes it, stop and report that
+instead of planning. If the spec leaves a genuine product/UX/scope decision
+unstated, you MUST ask the human before writing the plan — you MUST NOT guess.
 
 Use Claude Code's plan mode for the plan-approval gate: enter it, write the
 plan, then exit it for approval. You MUST NOT proceed to Implement until the
 human approves.
+
+**Orchestrated run.** When `/workflow:orchestrate` started this session, its
+brief says which of two modes applies:
+
+- *Plan pre-approved* (the human approved the batch): skip plan mode, put the
+  plan at the top of the PR body, and go on to Implement. The open-question
+  rule above still applies — stop and ask rather than guess.
+- *Stop after the plan* (an Escalation issue): use the plan-approval gate as
+  above.
+
+Either way, the gates in `workflow:orchestrate` § Gates apply: never merge,
+ask before rewriting pushed history, and write follow-ups into the PR body
+instead of opening issues.
 
 ## Implement, self-review, verify
 
