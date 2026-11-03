@@ -7,7 +7,7 @@
     {
       "name": "workflow",
       "source": "./plugins/workflow",
-      "description": "plan → implement → self-review → verify → report cycle: /workflow:address, /workflow:code-review-guideline, /workflow:adopt"
+      "description": "plan → implement → self-review → verify → report cycle: /workflow:address, /workflow:orchestrate, /workflow:code-review-guideline, /workflow:adopt"
     },
     {
       "name": "review-loop",
