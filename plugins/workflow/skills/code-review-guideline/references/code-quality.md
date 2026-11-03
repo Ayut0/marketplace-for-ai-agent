@@ -13,6 +13,8 @@ error conventions). Severity tiers are the ones in
 - SHOULD flag a string literal that drives a comparison or dispatch (route,
   method, status, event name) inline instead of through a named constant —
   Minor, even when the literal reads as self-describing.
+- SHOULD flag a hand-rolled numeric range check when the API already names
+  the predicate (`status >= 300` vs `response.ok`) — Minor.
 - MUST flag a magic value that feeds a Critical area named in the lenses
   (money, auth, …) — Critical.
 
@@ -52,6 +54,9 @@ error conventions). Severity tiers are the ones in
 
 ## Naming
 
+- SHOULD flag a function or method whose name doesn't start with a verb
+  (`corsHeaders` vs `buildCorsHeaders`) — Minor. Constructors and React
+  components are exempt.
 - SHOULD flag a new file or identifier that breaks its neighbors' naming
   pattern — Minor.
 - SHOULD flag package/module-name stutter (`ledger.LedgerPosting`) — Minor.
@@ -71,6 +76,10 @@ error conventions). Severity tiers are the ones in
 
 ## KISS
 
+- SHOULD flag non-trivial logic defined inline in an exported or returned
+  object or function (a default-export handler map, a returned closure) —
+  Minor. Extract a named function so the export reads as a list of what it
+  exposes.
 - SHOULD flag a one-liner that takes more than ten seconds to parse when
   named steps would read more clearly — Minor.
 
