@@ -1,6 +1,6 @@
 {
   "name": "workflow",
-  "version": "0.1.1",
-  "description": "Shared working agreement for Ayut0's repos: the address orchestrator, the review methodology, and a bootstrapper that adopts the cycle into a repo.",
+  "version": "0.2.0",
+  "description": "Shared working agreement for Ayut0's repos: the address orchestrator, the orchestrate skill for parallel issues, the review methodology, and a bootstrapper that adopts the cycle into a repo.",
   "author": { "name": "Ayut0" }
 }

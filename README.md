@@ -9,7 +9,8 @@ orchestrator, the review methodology, and the `@claude review` CI reviewer.
 
 | Shared here (update once, every repo gets it) | Per repo (thin, filled in by `/workflow:adopt`) |
 | --- | --- |
-| `plugins/workflow/skills/address` — the orchestrator | `AGENTS.md` — the cycle plus the repo's Project map, **Verify** commands, Escalation triggers |
+| `plugins/workflow/skills/address` — the orchestrator for one unit of work | `AGENTS.md` — the cycle plus the repo's Project map, **Verify** commands, Escalation triggers |
+| `plugins/workflow/skills/orchestrate` — dispatches the ready issues to parallel sessions and reviews their PRs | |
 | `plugins/workflow/skills/code-review-guideline` — reviewer-mode reset, scoping, severity ladder, evidence | `docs/agents/review-lenses.md` — the repo's own review lenses and Critical/Major examples |
 | `plugins/workflow/skills/adopt` — the bootstrapper and its templates | `REVIEW.md` — posted-review policy (repo-tunable "do not report" list) |
 | `.github/workflows/claude-review.yml` — reusable CI reviewer | `docs/agents/{issue-tracker,domain}.md` — config the matt-pocock skills read |
